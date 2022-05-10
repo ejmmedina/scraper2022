@@ -36,8 +36,27 @@ def load_or_download(sess, file_path, url):
         with open(file_path, 'w') as f:
             json.dump(data, f)
     return data
+    
+region_dict = {'REGION I': '44022',
+ 'REGION II': '44023',
+ 'REGION III': '44024',
+ 'REGION V': '44025',
+ 'REGION VI': '44026',
+ 'REGION VII': '44027',
+ 'REGION VIII': '44028',
+ 'REGION IX': '44029',
+ 'REGION X': '44030',
+ 'REGION XI': '44031',
+ 'REGION XII': '44032',
+ 'REGION XIII': '44033',
+ 'REGION IV-A': '44034',
+ 'REGION IV-B': '44035',
+ 'BARMM': '44036',
+ 'CORDILLERA ADMINISTRATIVE REGION': '44037',
+ 'NATIONAL CAPITAL REGION': '44038',
+ 'OAV': '44039'}
 
-def download_data(sess, node_dir, node_url):
+def download_data(sess, node_dir, node_url, region):
     """Recursively download data, skipping already downloaded files
     
     Parameters
@@ -55,11 +74,17 @@ def download_data(sess, node_dir, node_url):
     info_url = urljoin(BASE_URL, 'regions', node_url)
     node_info = load_or_download(sess, info_path, info_url)
 
+    # brute force way to filter scraped data by Region
+    if node_info['can'] == 'Country':
+        for reg, rc in region_dict.items():
+            if reg!=region:
+                node_info['srs'].pop(rc)
+
     # download data of all children
     for child in node_info['srs'].values():
         child_dir = os.path.join(node_dir,
                                  child['rn'].replace('/', '_'))
-        download_data(sess, child_dir, child['url']+'.json')
+        download_data(sess, child_dir, child['url']+'.json', '')
 
     if node_info['can'] == 'Barangay': # download ER if barangay
         for precinct in node_info['pps']:
