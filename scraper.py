@@ -36,7 +36,7 @@ def load_or_download(sess, file_path, url):
         with open(file_path, 'w') as f:
             json.dump(data, f)
     return data
-    
+
 region_dict = {'REGION I': '44022',
  'REGION II': '44023',
  'REGION III': '44024',
@@ -75,7 +75,7 @@ def download_data(sess, node_dir, node_url, region):
     node_info = load_or_download(sess, info_path, info_url)
 
     # brute force way to filter scraped data by Region
-    if node_info['can'] == 'Country':
+    if node_info['can'] == 'Country' and region:
         for reg, rc in region_dict.items():
             if reg!=region:
                 node_info['srs'].pop(rc)
