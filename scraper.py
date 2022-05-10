@@ -133,7 +133,8 @@ def download_data(sess, node_dir, node_url, region):
               type=click.Choice(['CRITICAL', 'ERROR', 'WARNING', 
                                  'INFO', 'DEBUG']),
               default='INFO')
-def main(base_dir, download_delay, log_level):
+@click.option('-r', '--region', default='')
+def main(base_dir, download_delay, log_level, region):
     BASE_DIR = 'data'
     logging.basicConfig(level=log_level)
     sess = requests.Session()
@@ -141,7 +142,7 @@ def main(base_dir, download_delay, log_level):
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
                     'AppleWebKit/537.36 (KHTML, like Gecko) '
                     'Chrome/101.0.4951.54 Safari/537.36'}
-    download_data(sess, '', 'root.json')
+    download_data(sess, '', 'root.json', region)
 
 if __name__ == "__main__":
     main()
